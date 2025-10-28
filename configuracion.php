@@ -9,7 +9,9 @@
     <script src="assets/js/config-changes-monitoring.js"></script>
     <script src="assets/js/config-option-selection.js"></script>
     <script src="assets/js/modif-buttons-controls.js"></script>
-    <script src="assets/js/fecth-email-change.js"></script>
+    <script type="module" src="assets/js/email-change-handler.js"></script>
+    <script type="module" src="assets/js/change-password-handler.js"></script>
+    <script src="assets/js/modif-reg-handler.js"></script>
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 
@@ -17,7 +19,7 @@
     $current_user = [
             "name" => "Stefano",
             "surname" => "Biglia",
-            "email" => "biglistefano2005@gmail.com",
+            "email" => "bigliastefano2005@gmail.com",
             "password" => "contraseña",
     ];
 
@@ -26,10 +28,11 @@
         exit;
     }
 ?>
-<div id="grey-background" class="hidden">
-    <p id="msj-bubble"></p>
-</div>
+
 <body id="page-index">
+    <div id="grey-background" class="hidden">
+        <p id="msj-bubble" class="view-container"></p>
+    </div>
     <header>
         <a href="/" id="header-logo">
             <img src="assets/img/LogoE.png" alt="Stocky Logo">
@@ -51,7 +54,7 @@
                     <p>Soporte</p>
                 </div>
             </div>
-            <div class="flex-column" id="config-container">
+            <div class="flex-column all-center" id="config-container">
                 <form class="flex-column justify-left align-center" method="post" action="./configuracion.php" id="form-micuenta">
                     <label for="nombre" style="margin-top: 0">Nombre</label>
                     <input class="config-input" type="text" id="nombre" name="name" value=<?php echo $current_user['name']?>>
@@ -73,19 +76,46 @@
 
                     <button class="btn" id="btn-guardar" disabled >Guardar Cambios</button>
                 </form>
+                <div id="registro-modifs-container" class="flex-column all-center hidden">
+                </div>
+                <div id="soporte-container" class="hidden">
+                    <div class="view-container">Soporte</div>
+                </div>
             </div>
         </div>
         <div class="view-container flex-column justify-left align-center hidden" id="modif-form-container">
-            <p id="return-btn">Volver</p>
-            <form style="margin-top: 2rem" id="email-form">
+            <p id="return-btn" class="return-btn">Volver</p>
+            <form style="margin-top: 2rem" id="email-form" class="hidden">
                 <label for="new-email" class="text-left"><h2>Nuevo E-Mail</h2></label>
                 <input type="email" id="new-email" name='new-email' placeholder="ejemplo@gmail.com" required>
-                <input type="email" name="old-email" <?php echo $current_user['email']?> hidden readonly>
-                <input type="text" name="name" <?php echo $current_user['name']?> hidden readonly>
                 <button type="submit" class="btn" style="margin-top: 8rem;">Confirmar</button>
+            </form>
+            <form style="margin-top: 2rem" id="code-form" class="hidden">
+                <label for="code" class="text-left"><h2>Codigo Recibido (Seis dígitos)</h2></label>
+                <input type="text" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="......" required>
+                <button type="submit" class="btn" style="margin-top: 8rem;">Confirmar</button>
+            </form>
+            <div class="hidden" id="save-email-container">
+                <h2>¿Desea modificar el email asociado a su cuenta?</h2>
+                <h3 style="margin-top: 2rem">Nuevo email: </h3><span id="new-email-text"></span>
+                <button style="margin-top: 3rem" class="btn btn-primary" id="save-email-btn">Confirmar</button>
+            </div>
+            <form class="hidden" id="change-password-form">
+                <label style= "margin-top: 0" for="old-password"><h2>Contraseña Actual</h2></label>
+                <input type="password" id="old-password">
+                <label for="new-password"><h2>Contraseña Nueva</h2></label>
+                <input type="password" id="new-password" name="new-password">
+                <label for="confirm-new-password"><h2>Confirmar Contraseña Nueva</h2></label>
+                <input type="password" id="confirm-new-password">
+                <label for="confirm-new-password" style="font-size: 0.7rem; margin-top: 0.5rem">Verificar que la contraseña nueva sea distinta a la ya existente y que todos los campos sean correctos.</label>
+                <button type="submit" style="margin-top: 5rem" class="btn btn-primary" id="save-password-btn" disabled>Confirmar</button>
             </form>
         </div>
     </main>
+    <div class="flex-column hidden" id="info-modif-container">
+        <div class="flex-row justify-right" style="width: 100%"><p id="reg-return" class="return-btn">Volver</p></div>
+
+    </div>
 </body>
 </body>
 </html>

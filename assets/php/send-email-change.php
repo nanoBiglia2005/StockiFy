@@ -28,15 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->addAddress($email);
 
             $mail->isHTML(true);
-            $mail->Subject = 'Verificacion por cambio de dirección de Correo';
-            $mail->Body = 'Hola, '.$_POST['name'].' Has solicitado un cambio de E-Mail para tu cuenta de StockiFy.'.
-                '\n\nTu codigo es <b>'.$code.'</b>.\n\n\n\nSi no solicitaste este cambio, ignora este mensaje.';
+            $mail->Subject = 'Verificacion por cambio de direccion de Correo';
+            $mail->Body = "Hola, {$_POST['name']}. Has solicitado un cambio de E-Mail para tu cuenta de StockiFy.".
+                "<br><br><h2>Tu codigo es</h2><h1><b>{$code}</b></h1>.(Si no solicitaste este cambio, ignora este mensaje.)";
             $mail->send();
+            $response['success'] = true;
+            $response['message'] = "Se ha enviado el email correctamente. Verifique todas sus casillas para encontrar el código de 6 digitos recibido (Incluyendo la casilla de spam)";
+            $response['code'] = $code;
         }
 
         catch (Exception $e) {
             $response['success'] = false;
-            $response['message'] = "Ha ocurrido un error intero. No se pudo enviar el correo electronico.{$mail->ErrorInfo}";
+            $response['message'] = "Ha ocurrido un error intero. No se pudo enviar el correo electronico ({$mail->ErrorInfo}).";
         }
     }
     else{

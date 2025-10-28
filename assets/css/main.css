@@ -121,7 +121,6 @@ main {
     border-radius: 0 4px 4px 4px;
     box-shadow: 10px 10px 0px var(--color-black);
     transition: box-shadow var(--transition-speed) ease;
-    padding: 2rem 3rem 1rem 1rem;
 }
 
 #options-config-container{
@@ -132,7 +131,13 @@ main {
     border-color: var(--color-black);
     border-width: 0 0 2px 2px;
     border-radius: 4px 0 0 4px;
+    box-shadow: 10px 10px 0px var(--color-black);
+    transition: box-shadow var(--transition-speed) ease;
     height: fit-content;
+}
+
+#options-config-container:hover{
+    box-shadow: 10px 10px 0px var(--accent-color);
 }
 
 #modif-form-container{
@@ -140,6 +145,47 @@ main {
     position: absolute;
     padding-bottom: 1rem;
 }
+
+.item-registro{
+    margin: 0 0 0.5rem 0;
+    max-width: none;
+    width: 90%;
+}
+
+#registro-modifs-container{
+    height: fit-content;
+    width: 90%;
+}
+
+.registro-seccion-1{
+    max-width: 70%;
+}
+
+.registro-seccion-2{
+    width: fit-content;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+#info-modif-container{
+    background-color: var(--color-white);
+    border: var(--border-strong);
+    border-radius: var(--border-radius);
+    box-shadow: 10px 10px 0px var(--color-black);
+    z-index: 16;
+    position: absolute;
+    width: 20rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem 1rem 2rem 2rem;
+}
+
+#reg-info-container{
+    gap: 1.5rem;
+}
+
+
 
 /* ---- Estilos para Botones (Versión "Pop-Up") ---- */
 .btn {
@@ -228,8 +274,11 @@ main {
     cursor: default;
 }
 
-#return-btn{
-    padding: 8px;
+.return-btn{
+    left: -6%;
+    top: -25px;
+    position: relative;
+    padding: 5px;
     width: fit-content;
     border-radius: var(--border-radius);
     border-width: 2px;
@@ -238,18 +287,29 @@ main {
     transition: all var(--transition-speed) ease;
 }
 
-#return-btn:hover{
+.return-btn:hover{
     border-color:  var(--color-gray);
     cursor: pointer;
     color: var(--color-black);
 }
 
+#reg-return{
+    color: var(--color-gray);
+    top: 0;
+    left: 0;
+}
+
+#reg-return:hover{
+    cursor: pointer;
+    color: var(--color-black);
+}
+
 /* CORRECCIÓN DE COLOR */
-.btn.btn-primary {
+.btn.btn-primary:not(:disabled) {
     background-color: var(--accent-color);
     color: var(--color-white);
 }
-.btn.btn-primary:active {
+.btn.btn-primary:active:not(:disabled) {
     filter: brightness(1.2);
 }
 .btn.btn-secondary {
@@ -278,6 +338,21 @@ input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px 
 .input-locked{
     background-color: rgba(134, 134, 134, 0.44) !important;
 }
+
+#change-password-form{
+    margin-bottom: 2rem;
+}
+
+#change-password-form > label{
+    margin-top: 2rem;
+    text-align: left;
+}
+
+#form-micuenta{
+    width: 100%;
+    height: 100%;
+    padding: 2rem 3rem 1rem 1rem;
+}
 /* ---- Configuraciones de Flex ---- */
 
 .flex-row{
@@ -298,6 +373,14 @@ input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px 
     justify-content: left;
 }
 
+.justify-between{
+    justify-content: space-between;
+}
+
+.justify-right{
+    justify-content: right;
+}
+
 /* ---- Configuraciones Textos ---- */
 
 .text-left{
@@ -306,6 +389,41 @@ input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px 
 
 #options-config-container .btn p{
     width: fit-content;
+}
+
+.msj-exito{
+    color: green;
+}
+
+.msj-error{
+    color: red;
+}
+
+.nombre-producto-registro{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.registro-seccion-2 p{
+    color: var(--color-gray);
+    font-size: 1rem;
+}
+
+.low-stock-alert{
+    opacity: 0;
+    font-size: 0.2rem;
+    position: absolute;
+    top: 20px;
+    background-color: var(--color-white);
+    transition: all var(--transition-speed) ease;
+}
+
+.low-stock-container img:hover{
+    transform: scale(1.2);
+}
+.low-stock-container img:hover ~ .low-stock-alert{
+    opacity: 1;
 }
 
 /* ---- Configuraciones Varias ---- */
@@ -318,9 +436,35 @@ input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px 
 #grey-background{
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     z-index: 15;
     background-color: rgba(0, 0, 0, 0.25);
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#msj-bubble{
+    position: absolute;
+    z-index: 20;
+    padding: 8px;
+    margin-top: 3rem;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
+    box-shadow: none;
+}
+
+/* ---- Estilos de imágenes ---- */
+
+#info-modif-container img{
+    height: 13px;
+    margin-left: 5px;
+}
+
+.item-registro img{
+    height: 15px;
+    margin-right: 5px;
     transition: all var(--transition-speed) ease;
 }
 
