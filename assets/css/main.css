@@ -1,0 +1,329 @@
+/* Archivo: public/assets/css/main.css */
+
+/* ---- Carga de Fuentes Auto-hospedadas ---- */
+@font-face {
+    font-family: 'Satoshi';
+    src: url('../fonts/Satoshi-Regular.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Satoshi';
+    src: url('../fonts/Satoshi-Bold.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+    font-family: 'Satoshi';
+    src: url('../fonts/Satoshi-Black.woff2') format('woff2');
+    font-weight: 900; font-style: normal; font-display: swap;
+}
+
+/* ---- Variables Globales ---- */
+:root {
+    --color-white: #FFFFFF;
+    --color-black: #1A1A1A;
+    --color-gray: #8A8A8A;
+    --accent-color: #5E81AC; /* Azul por defecto */
+    --accent-color-medium-opacity: rgba(94, 129, 172, 0.75);
+    --font-title: 'Satoshi', sans-serif;
+    --font-body: 'Satoshi', sans-serif;
+    --border-strong: 2px solid var(--color-black);
+    --border-radius: 4px;
+    --transition-speed: 0.2s;
+}
+
+/* ---- Reseteo y Estilos Generales ---- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    font-family: var(--font-body);
+    background-color: var(--color-white);
+    color: var(--color-black);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ---- Tipografía ---- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-title);
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+/* ---- Encabezado (Header) ---- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: var(--border-strong);
+    background-color: var(--color-white);
+    position: relative;
+    z-index: 10;
+}
+#header-logo img { height: 40px; width: auto; display: block; }
+#header-nav { display: flex; gap: 1rem; }
+
+/* ---- Botones específicos del Header ---- */
+#header-nav .btn {
+    width: auto;
+    padding: 8px 16px;
+    margin-top: 0;
+    font-size: 0.9rem;
+    line-height: 1;
+    box-shadow: none;
+    transform: translate(0, 0);
+}
+
+#header-nav .btn:hover {
+    box-shadow: 3px 3px 0px var(--color-black);
+    transform: translate(-1px, -1px);
+}
+
+#header-nav .btn:active {
+    box-shadow: 1px 1px 0px var(--color-black);
+    transform: translate(2px, 2px);
+}
+
+/* ---- Contenido Principal (Main) ---- */
+main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+/* ---- Contenedores de Vistas ---- */
+.view-container {
+    background-color: var(--color-white);
+    padding: 2.5rem;
+    border: var(--border-strong);
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 550px;
+    text-align: center;
+    box-shadow: 10px 10px 0px var(--color-black);
+    transition: box-shadow var(--transition-speed) ease;
+}
+.view-container:hover, #config-container:hover {
+    box-shadow: 12px 12px 0px var(--accent-color);
+}
+.view-container h2 {
+    font-weight: 700;
+    color: var(--color-black);
+    margin-bottom: 0.5rem;
+}
+.view-container p { color: var(--color-gray); margin-bottom: 1.5rem; }
+
+#config-container{
+    width: 50rem;
+    background-color: var(--color-white);
+    border: var(--border-strong);
+    border-radius: 0 4px 4px 4px;
+    box-shadow: 10px 10px 0px var(--color-black);
+    transition: box-shadow var(--transition-speed) ease;
+    padding: 2rem 3rem 1rem 1rem;
+}
+
+#options-config-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: right;
+    border-style: solid;
+    border-color: var(--color-black);
+    border-width: 0 0 2px 2px;
+    border-radius: 4px 0 0 4px;
+    height: fit-content;
+}
+
+#modif-form-container{
+    z-index: 20;
+    position: absolute;
+    padding-bottom: 1rem;
+}
+
+/* ---- Estilos para Botones (Versión "Pop-Up") ---- */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 0.5rem;
+    border: var(--border-strong);
+    border-radius: var(--border-radius);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: all var(--transition-speed) ease;
+    line-height: 1;
+    box-shadow: none;
+    transform: translate(0, 0);
+}
+.btn:hover {
+    box-shadow: 4px 4px 0px var(--color-black);
+    transform: translate(-2px, -2px);
+}
+.btn:active {
+    box-shadow: 1px 1px 0px var(--color-black);
+    transform: translate(3px, 3px);
+}
+
+#btn-password{
+    padding: 0;
+    margin: 0;
+    width: fit-content;
+    height: 100%;
+}
+
+.btn.btn-modificar{
+    width: fit-content;
+    font-size: 0.9rem;
+}
+
+.btn.btn-modificar:active, #btn-password:active{
+    background-color: var(--accent-color);
+}
+
+.btn:disabled{
+    cursor: not-allowed;
+}
+
+.btn:disabled:hover{
+    transform: none;
+    box-shadow: none;
+}
+#btn-guardar{
+    margin-top: 4rem;
+    width: 40%;
+}
+#btn-guardar:not(:disabled){
+    background-color: var(--accent-color);
+    color: var(--color-white);
+}
+
+#options-config-container .btn{
+    margin: 0;
+    font-size: 1.3rem;
+    border-style: solid;
+    border-color: var(--color-black);
+    border-width: 2px 0 0 0;
+    border-radius: 0;
+}
+
+#options-config-container .btn:hover{
+    background-color: var(--accent-color-medium-opacity);
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-option-selected{
+    font-size: 2rem !important;
+    background-color: var(--accent-color);
+    color: var(--color-white);
+}
+
+.btn-option-selected:hover{
+    background-color: var(--accent-color) !important;
+    cursor: default;
+}
+
+#return-btn{
+    padding: 8px;
+    width: fit-content;
+    border-radius: var(--border-radius);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--color-white);
+    transition: all var(--transition-speed) ease;
+}
+
+#return-btn:hover{
+    border-color:  var(--color-gray);
+    cursor: pointer;
+    color: var(--color-black);
+}
+
+/* CORRECCIÓN DE COLOR */
+.btn.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--color-white);
+}
+.btn.btn-primary:active {
+    filter: brightness(1.2);
+}
+.btn.btn-secondary {
+    background-color: var(--color-white);
+    color: var(--color-black);
+}
+
+/* ---- Formularios ---- */
+label { display: block; margin: 1rem 0 0.5rem 0; font-weight: 600; }
+input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-white);
+    border: var(--border-strong);
+    border-radius: var(--border-radius);
+    color: var(--color-black);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: all var(--transition-speed) ease;
+}
+input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px var(--accent-color); }
+
+#form-micuenta [type="text"], input[type="email"], input[type="password"]{
+    height: 50px;
+}
+.input-locked{
+    background-color: rgba(134, 134, 134, 0.44) !important;
+}
+/* ---- Configuraciones de Flex ---- */
+
+.flex-row{
+    display: flex;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+.all-center{
+    align-items: center;
+    justify-content: center;
+}
+
+.justify-left{
+    justify-content: left;
+}
+
+/* ---- Configuraciones Textos ---- */
+
+.text-left{
+    text-align: left;
+}
+
+#options-config-container .btn p{
+    width: fit-content;
+}
+
+/* ---- Configuraciones Varias ---- */
+
+#pass-img{
+    padding: 0 5px 0 5px;
+    height: 2rem;
+}
+
+#grey-background{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 15;
+    background-color: rgba(0, 0, 0, 0.25);
+    transition: all var(--transition-speed) ease;
+}
+
+/* ---- Utilitarios ---- */
+.hidden { display: none !important;}
+hr { border: none; height: 2px; background-color: var(--color-black); margin: 1.5rem 0; }
