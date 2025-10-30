@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id : userID})
     }).then(response => response.json())
         .then(data => {
             if (!data.success){
@@ -146,7 +145,7 @@ function actualizarEstadisticas(fechaDesde, fechaHasta,chart)
 
 function formatStatData(data) {
 
-    const categories = ['General','Table','Product'];
+    const categories = ['General','Table'];
     const statistics = ['stockVendido','stockIngresado','gastos','ganancia','ingresosBrutos','promedioVenta'];
 
     const groupedData = {};
@@ -180,13 +179,7 @@ function addContainerData(dailyData, groupData, listaFechas,chart){
         { id: 'ingresos-brutos-tabla',groupedKey: 'tableData.ingresosBrutos', dailyKey: 'ingresosBrutosTable', unit: '$' },
         { id: 'ingresos-stock-tabla', groupedKey: 'tableData.stockIngresado', dailyKey: 'stockIngresadoTable', unit: 'unit' },
         { id: 'gastos-tabla',         groupedKey: 'tableData.gastos',         dailyKey: 'gastosTable',         unit: '$' },
-        { id: 'promedio-venta-tabla', groupedKey: 'tableData.promedioVenta',  dailyKey: 'promedioVentaTable',  unit: '$' },
-        { id: 'ventas-producto',         groupedKey: 'productData.stockVendido',   dailyKey: 'stockVendidoProduct',   unit: 'unit' },
-        { id: 'ganancias-producto',      groupedKey: 'productData.ganancia',       dailyKey: 'gananciaProductl',       unit: '$' },
-        { id: 'ingresos-brutos-producto',groupedKey: 'productData.ingresosBrutos', dailyKey: 'ingresosBrutosProduct', unit: '$' },
-        { id: 'ingresos-stock-producto', groupedKey: 'productData.stockIngresado', dailyKey: 'stockIngresadoProduct', unit: 'unit' },
-        { id: 'gastos-producto',         groupedKey: 'productData.gastos',         dailyKey: 'gastosProduct',         unit: '$' },
-        { id: 'promedio-venta-producto', groupedKey: 'productData.promedioVenta',  dailyKey: 'promedioVentaProduct',  unit: '$' }
+        { id: 'promedio-venta-tabla', groupedKey: 'tableData.promedioVenta',  dailyKey: 'promedioVentaTable',  unit: '$' }
     ];
 
     containerConfig.forEach(container =>{
