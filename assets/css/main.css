@@ -24,6 +24,7 @@
     --color-gray: #8A8A8A;
     --accent-color: #5E81AC; /* Azul por defecto */
     --accent-color-medium-opacity: rgba(94, 129, 172, 0.75);
+    --accent-color-hover: #5E81AC;
     --font-title: 'Satoshi', sans-serif;
     --font-body: 'Satoshi', sans-serif;
     --border-strong: 2px solid var(--color-black);
@@ -185,7 +186,136 @@ main {
     gap: 1.5rem;
 }
 
+#estadisticas-menu-container{
+    width: 150px;
+    background-color: var(--accent-color-medium-opacity);
+    border-width: 0 2px 0 0;
+    border-color: var(--color-black);
+    border-style: solid;
+}
 
+#estadisticas-main-container{
+    width: 100%;
+    height: fit-content;
+    align-items: start;
+}
+
+#estadisticas-fecha-container{
+    margin-top: 2rem;
+    width: 70%;
+    align-self: center;
+    box-shadow: 10px 10px 0px var(--color-black);
+    border: 2px solid var(--color-gray);
+    border-radius: var(--border-radius);
+    transition: all var(--transition-speed) ease;
+}
+
+#estadisticas-generales-container{
+    margin-top: 2rem;
+    width: 100%;
+    transition: all var(--transition-speed) ease;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 4rem;
+}
+
+#estadisticas-fecha-container > div{
+    border-style: solid;
+    border-color: var(--color-gray);
+    padding: 1rem;
+    width: 350px;
+    transition: all var(--transition-speed) ease;
+}
+
+#estadisticas-fecha-desde{
+    border-width: 0 2px 0 0;
+}
+
+#estadisticas-fecha-hasta{
+    text-align: right;
+    border-width: 0 0 0 2px;
+}
+
+#estadisticas-fecha-container > div:hover{
+    cursor: pointer;
+    background-color: var(--accent-color);
+    border-color: var(--color-black);
+}
+
+#estadisticas-fecha-container div p{
+    color: var(--color-gray);
+    font-size: 0.8rem;
+    transition: all var(--transition-speed) ease;
+}
+
+#estadisticas-fecha-container div h4{
+    transition: all var(--transition-speed) ease;
+}
+
+#estadisticas-fecha-container div:hover p{
+    color: var(--color-white);
+    font-size: 1rem;
+}
+
+#estadisticas-fecha-container div:hover h4{
+    font-size: 1.1rem;
+}
+
+#estadisticas-fecha-container:hover{
+    border: var(--border-strong);
+    box-shadow: 10px 10px 0px var(--accent-color-hover);
+}
+
+.estadistica-item-container{
+    padding: 1rem;
+    background-color: var(--color-white);
+    border: var(--border-strong);
+    box-shadow: 10px 10px 0px var(--color-black);
+    border-radius: var(--border-radius);
+    width: fit-content;
+    transition: all var(--transition-speed) ease;
+}
+
+.estadistica-item-container:hover{
+    transform: scale(1.1);
+}
+
+.estadisticas-container{
+    background-color: var(--color-white);
+    width: 100%; margin-top:6rem;
+    padding: 4rem;
+    transition: all var(--transition-speed) ease;
+    border-width: 2px 0 2px 0;
+    border-style: solid;
+    border-color: var(--color-white);
+}
+
+.estadisticas-container:hover{
+    border-color: var(--color-gray);
+    cursor: pointer;
+    transform: scale(1.005);
+    border-width: 2px 2px 2px 2px;
+}
+
+.estadistica-item-container:hover h1, h3, h4{
+    transition: all var(--transition-speed) ease;
+}
+
+.estadisticas-container h4{
+    color: var(--color-gray);
+}
+
+.estadisticas-container > h1{
+    font-size: 4rem;
+}
+
+.estadistica-item-container:hover h1{
+    color: var(--accent-color);
+}
+
+.estadistica-item-container:hover h3{
+    font-size: 2rem;
+}
 
 /* ---- Estilos para Botones (Versión "Pop-Up") ---- */
 .btn {
@@ -446,13 +576,12 @@ input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px 
 }
 
 #msj-bubble{
-    position: absolute;
     z-index: 20;
     padding: 8px;
     margin-top: 3rem;
-    opacity: 0;
     transition: opacity var(--transition-speed) ease;
     box-shadow: none;
+    opacity: 0;
 }
 
 /* ---- Estilos de imágenes ---- */
@@ -471,3 +600,11 @@ input[type="text"]:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3px 
 /* ---- Utilitarios ---- */
 .hidden { display: none !important;}
 hr { border: none; height: 2px; background-color: var(--color-black); margin: 1.5rem 0; }
+
+/* ---- Media ---- */
+
+@media (max-width: 1400px) {
+    #estadisticas-generales-container{
+        grid-template-columns: 1fr 1fr;
+    }
+}

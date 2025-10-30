@@ -1,16 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const accentColors = [
+        '#88C0D0',
+        '#A3BE8C',
+        '#EBCB8B',
+        '#BF616A',
+        '#B48EAD'
+    ];
 
-    const generarColorAleatorio = () => {
-    const letras = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letras[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
+    const randomColor = accentColors[Math.floor(Math.random() * accentColors.length)];
+    const randomHoverColor = accentColors[Math.floor(Math.random() * accentColors.length)];
 
-    var nuevoColor = generarColorAleatorio();
-    document.documentElement.style.setProperty('--accent-color', nuevoColor);
-    nuevoColor += '75';
-    document.documentElement.style.setProperty('--accent-color-medium-opacity', nuevoColor);
+    document.documentElement.style.setProperty('--accent-color', randomColor);
+    document.documentElement.style.setProperty('--accent-color-hover', randomHoverColor);
 });

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded',() =>{
 
     //Esta es una variable DE PRUEBA para mostrar el comportamiento de la página con los registros recibidos
-    //a partir de las consultas back-end.
+    //a partir de las consultas del back-end.
 
     const registrosRecibidos = [{
         productName: "Remera XL",
