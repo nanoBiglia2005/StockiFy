@@ -6,6 +6,25 @@ document.addEventListener('DOMContentLoaded', () => {
     var creationDate;
     var creationDateNoFormat;
 
+    const graficoContainer = document.getElementById('grafico-estadistica');
+
+    const options = {
+        chart:{
+            type: 'area',
+            height: 350
+        },
+        series: [{
+            name: 'empty',
+            data: [0]
+        }],
+        xaxis: {
+            categories: 'empty'
+        }
+    };
+
+    const chart = new ApexCharts(graficoContainer,options);
+    chart.render();
+
     fetch('./assets/php/get-account-date.php', {
         method: 'POST',
         headers: {
@@ -36,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                             </div>
                                             <input type="date" class="hidden" id="fecha-hasta-elegida">`
 
-            actualizarEstadisticas(creationDateNoFormat,todayDateNoFormat);
+            actualizarEstadisticas(creationDateNoFormat,todayDateNoFormat,chart);
 
             const fechaDesdeBtn = document.getElementById('estadisticas-fecha-desde');
             const fechaHastaBtn = document.getElementById('estadisticas-fecha-hasta');
@@ -68,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fechaDesdeBtn.querySelector('h4').textContent = `${fechaDesde.day} ${fechaDesde.date} de ${fechaDesde.month} de ${fechaDesde.year}`
                 fechaHastaBtn.querySelector('h4').textContent = `${fechaHasta.day} ${fechaHasta.date} de ${fechaHasta.month} de ${fechaHasta.year}`
 
-                actualizarEstadisticas(phpDesdeDate,phpHastaDate);
+                actualizarEstadisticas(phpDesdeDate,phpHastaDate,chart);
             })
 
             fechaHastaBtn.addEventListener('click',function() {
@@ -85,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fechaDesdeBtn.querySelector('h4').textContent = `${fechaDesde.day} ${fechaDesde.date} de ${fechaDesde.month} de ${fechaDesde.year}`
                 fechaHastaBtn.querySelector('h4').textContent = `${fechaHasta.day} ${fechaHasta.date} de ${fechaHasta.month} de ${fechaHasta.year}`
 
-                actualizarEstadisticas(phpDesdeDate,phpHastaDate);
+                actualizarEstadisticas(phpDesdeDate,phpHastaDate,chart);
             })
         })
 
@@ -100,78 +119,124 @@ function formatDate(ogDate){
     return {'date' : todayDate,'day' : todayDay,'month' : todayMonth,'year' : todayYear};
 }
 
-function actualizarEstadisticas(fechaDesde, fechaHasta)
+function actualizarEstadisticas(fechaDesde, fechaHasta,chart)
 {
-    fechaDesde = fechaDesde.toISOString().slice(0,10);
-    fechaHasta = fechaHasta.toISOString().slice(0,10);
+    let fechaActual = new Date(fechaDesde);
+    const listaFechas = [];
+
+    while (fechaActual <= fechaHasta){
+        listaFechas.push(fechaActual.toISOString().slice(0,10));
+        fechaActual.setDate(fechaActual.getDate()+1);
+    }
+
     fetch('./assets/php/update-statistics.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({fechaDesde : fechaDesde,fechaHasta : fechaHasta, id : userID})
+        body: JSON.stringify({fechas : listaFechas})
 
     }).then(response => response.json())
         .then(dailyData => {
-
             const groupedData = formatStatData(dailyData);
-            const ventasGeneral =  document.getElementById('ventas-general');
-            const gananciasGeneral = document.getElementById('ganancias-general');
-            const ingresosBrutosGeneral = document.getElementById('ingresos-brutos-general');
-            const ingresosStockGeneral = document.getElementById('ingresos-stock-general');
-            const gastosGeneral = document.getElementById('gastos-general');
-            const promedioVentaGeneral = document.getElementById('promedio-venta-general');
 
-
-            ventasGeneral.querySelector('h3').textContent = `${groupedData.stockVendidoGeneral} unidad${(groupedData.stockVendidoGeneral > 1) ? 'es' : ''}`;
-            gananciasGeneral.querySelector('h3').textContent = `$${groupedData.gananciasGeneral}`;
-            ingresosBrutosGeneral.querySelector('h3').textContent = `$${groupedData.ingresosBrutosGeneral}`;
-            ingresosStockGeneral.querySelector('h3').textContent = `${groupedData.ingresosStockGeneral} unidad${(groupedData.ingresosStockGeneral > 1) ? 'es' : ''}`;
-            gastosGeneral.querySelector('h3').textContent = `$${groupedData.gastosGeneral}`;
-            promedioVentaGeneral.querySelector('h3').textContent = `$${groupedData.promedioVentaGeneral}`;
-
-            const graficoContainer = document.getElementById('grafico-estadistica');
-
-            const options = {
-                chart:{
-                    type: 'area',
-                    height: 350
-                },
-                series: [{
-                    name: 'Prueba',
-                    data: dailyData.stockVendidoGeneral
-                }],
-                xaxis: {
-                    categories: [dailyData.fechaDesde, dailyData.fechaHasta]
-                }
-            };
-
-            const chart = new ApexCharts(graficoContainer,options);
-            chart.render();
+            addContainerData(dailyData,groupedData,listaFechas,chart);
         })
 }
 
 function formatStatData(data) {
 
-    const stockVendidoGeneral = data.stockVendidoGeneral.reduce((acum,valor) => {
-        return acum + valor;
+    const categories = ['General','Table','Product'];
+    const statistics = ['stockVendido','stockIngresado','gastos','ganancia','ingresosBrutos','promedioVenta'];
+
+    const groupedData = {};
+
+    categories.forEach(category => {
+        const categoryKey = `${category.toLowerCase()}Data`;
+        groupedData[categoryKey] = {};
+
+        statistics.forEach(statistic => {
+            const statisticKey = `${statistic}${category}`;
+            const dataValue = data[statisticKey].reduce((acum,valor) => {
+                return acum + valor;
+            })
+            groupedData[categoryKey][statistic] = dataValue;
+        })
     })
-    const ingresosStockGeneral = data.stockIngresadoGeneral.reduce((acum,valor) => {
-        return acum + valor;
+    return groupedData;
+}
+
+function addContainerData(dailyData, groupData, listaFechas,chart){
+
+    const containerConfig = [
+        { id: 'ventas-general',         groupedKey: 'generalData.stockVendido',   dailyKey: 'stockVendidoGeneral',   unit: 'unit' },
+        { id: 'ganancias-general',      groupedKey: 'generalData.ganancia',       dailyKey: 'gananciaGeneral',       unit: '$' },
+        { id: 'ingresos-brutos-general',groupedKey: 'generalData.ingresosBrutos', dailyKey: 'ingresosBrutosGeneral', unit: '$' },
+        { id: 'ingresos-stock-general', groupedKey: 'generalData.stockIngresado', dailyKey: 'stockIngresadoGeneral', unit: 'unit' },
+        { id: 'gastos-general',         groupedKey: 'generalData.gastos',         dailyKey: 'gastosGeneral',         unit: '$' },
+        { id: 'promedio-venta-general', groupedKey: 'generalData.promedioVenta',  dailyKey: 'promedioVentaGeneral',  unit: '$' },
+        { id: 'ventas-tabla',         groupedKey: 'tableData.stockVendido',   dailyKey: 'stockVendidoTable',   unit: 'unit' },
+        { id: 'ganancias-tabla',      groupedKey: 'tableData.ganancia',       dailyKey: 'gananciaTable',       unit: '$' },
+        { id: 'ingresos-brutos-tabla',groupedKey: 'tableData.ingresosBrutos', dailyKey: 'ingresosBrutosTable', unit: '$' },
+        { id: 'ingresos-stock-tabla', groupedKey: 'tableData.stockIngresado', dailyKey: 'stockIngresadoTable', unit: 'unit' },
+        { id: 'gastos-tabla',         groupedKey: 'tableData.gastos',         dailyKey: 'gastosTable',         unit: '$' },
+        { id: 'promedio-venta-tabla', groupedKey: 'tableData.promedioVenta',  dailyKey: 'promedioVentaTable',  unit: '$' },
+        { id: 'ventas-producto',         groupedKey: 'productData.stockVendido',   dailyKey: 'stockVendidoProduct',   unit: 'unit' },
+        { id: 'ganancias-producto',      groupedKey: 'productData.ganancia',       dailyKey: 'gananciaProductl',       unit: '$' },
+        { id: 'ingresos-brutos-producto',groupedKey: 'productData.ingresosBrutos', dailyKey: 'ingresosBrutosProduct', unit: '$' },
+        { id: 'ingresos-stock-producto', groupedKey: 'productData.stockIngresado', dailyKey: 'stockIngresadoProduct', unit: 'unit' },
+        { id: 'gastos-producto',         groupedKey: 'productData.gastos',         dailyKey: 'gastosProduct',         unit: '$' },
+        { id: 'promedio-venta-producto', groupedKey: 'productData.promedioVenta',  dailyKey: 'promedioVentaProduct',  unit: '$' }
+    ];
+
+    containerConfig.forEach(container =>{
+        const statisticContainer = document.getElementById(container.id);
+        const keys = container.groupedKey.split('.');
+
+        const groupValue = groupData[keys[0]][keys[1]];
+        const h3Text = (container.unit === 'unit') ? `${groupValue} unidad${(groupData.groupedKey > 1) ? 'es' : ''}` :
+            `$${groupValue}`;
+
+        statisticContainer.querySelector('h3').textContent = h3Text;
+
+        statisticContainer.addEventListener('click', () => {
+            const statName = statisticContainer.querySelector('h1').textContent;
+            showGraph(statName,dailyData[container.dailyKey],listaFechas,chart);
+        });
     })
-    const gastosGeneral = data.gastosGeneral.reduce((acum,valor) => {
-        return acum + valor;
-    })
-    const gananciasGeneral = data.gananciaGeneral.reduce((acum,valor) => {
-        return acum + valor;
-    })
-    const ingresosBrutosGeneral = data.ingresosBrutosGeneral.reduce((acum,valor) => {
-        return acum + valor;
-    })
-    const promedioVentaGeneral = data.promedioVentaGeneral.reduce((acum,valor) => {
-        return acum + valor;
+}
+
+function showGraph(statName,dailyData,dateList,chart){
+    const options = {
+        chart:{
+            type: 'area',
+            height: 350
+        },
+        series: [{
+            name: statName,
+            data: dailyData
+        }],
+        xaxis: {
+            categories: dateList
+        }
+    };
+    chart.updateOptions(options);
+
+    const graphContainer = document.getElementById('grafico-estadistica-container');
+    const greyBg = document.getElementById('grey-background');
+    const backBtn = graphContainer.querySelector('p');
+
+    graphContainer.querySelector('h3').textContent = `Estadísticas Diarias = ${statName}`;
+    greyBg.classList.remove('hidden');
+    graphContainer.classList.remove('hidden');
+
+    backBtn.addEventListener('click', () =>{
+        greyBg.classList.add('hidden');
+        graphContainer.classList.add('hidden');
     })
 
-    return {'stockVendidoGeneral':stockVendidoGeneral,'ingresosStockGeneral':ingresosStockGeneral,'gastosGeneral':gastosGeneral,
-        'gananciasGeneral':gananciasGeneral,'ingresosBrutosGeneral':ingresosBrutosGeneral,'promedioVentaGeneral':promedioVentaGeneral};
+    greyBg.addEventListener('click', () =>{
+        greyBg.classList.add('hidden');
+        graphContainer.classList.add('hidden');
+    })
 }

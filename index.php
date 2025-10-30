@@ -1,5 +1,5 @@
 <?php
-require_once _DIR_ . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 $currentUser = getCurrentUser();
 ?>
 
