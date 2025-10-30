@@ -2,12 +2,15 @@
 require "Database.php";
 $user_id = 1;
 $userinv = execConsult("SELECT id FROM inventories WHERE user_id = $user_id");
+$inv = (int)$userinv[0]["id"];
+
+$tablas = execConsult("SELECT * FROM user_tables WHERE inventory_id = $inv");
+$tablaSeleccionada= $tablas[0]["id"];
 if (empty($userinv)) {
     echo json_encode(['error' => 'No inventory found for this user.']);
     exit;
 }
 
-$inv = (int)$userinv[0]["id"];
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
@@ -40,7 +43,7 @@ foreach ($listaFechas as $fecha) {
         $fechaSQL = date('Y-m-d');
     }
 
-    // consultas corregidas (usar columnas reales de la DB)
+    // consultas para estadisticas generales
     $stockVendido = execConsult("SELECT SUM(si.quantity) AS total FROM sale_items si JOIN sales s ON si.sale_id = s.id WHERE s.inventory_id = $inv AND DATE(s.sale_date) = '$fechaSQL'");
     $stockIngresado = execConsult("SELECT SUM(ri.quantity) AS total FROM receipt_items ri JOIN receipts r ON ri.receipt_id = r.id WHERE r.inventory_id = $inv AND DATE(r.sale_date) = '$fechaSQL'");
     $ingresosBrutos = execConsult("SELECT SUM(total_amount) AS total FROM sales WHERE inventory_id = $inv AND DATE(sale_date) = '$fechaSQL'");
@@ -63,13 +66,29 @@ foreach ($listaFechas as $fecha) {
     $gastosGeneral[] = $gastosVal;
     $gananciaGeneral[] = $gananciaVal;
 
+    //Consultas para tabla
+    $stockVendidoT = execConsult("SELECT SUM(si.quantity) AS total FROM sale_items si JOIN sales s ON si.sale_id = s.id WHERE s.inventory_id = $inv AND DATE(s.sale_date) = '$fechaSQL' AND user_table_id = $tablaSeleccionada");
+    $stockIngresadoT = execConsult("SELECT SUM(ri.quantity) AS total FROM receipt_items ri JOIN receipts r ON ri.receipt_id = r.id WHERE r.inventory_id = $inv AND DATE(r.sale_date) = '$fechaSQL' AND user_table_id = $tablaSeleccionada");
+    $ingresosBrutosT = execConsult("SELECT SUM(si.quantity * si.unit_price) AS total FROM sale_items si JOIN sales s ON s.id = si.sale_id WHERE s.inventory_id = $inv AND DATE(s.sale_date) = '$fechaSQL'");
+    $promedioVentaT = execConsult("SELECT AVG(si.quantity * si.unit_price) AS total FROM sale_items si JOIN sales s ON s.id = si.sale_id WHERE s.inventory_id = $inv AND DATE(s.sale_date) = '$fechaSQL'");
+    $gastosT = execConsult("SELECT SUM(ri.quantity * ri.unit_price) AS total FROM receipt_items ri JOIN receipts r ON r.id = ri.receipt_id WHERE r.inventory_id = $inv AND DATE(r.sale_date) = '$fechaSQL'");
+
+    //convertir valores tablas a numericos
+    $stockVendidoValT = (int)($stockVendidoT[0]['total'] ?? 0.0);
+    $stockIngresadoValT = (int)($stockIngresadoT[0]['total'] ?? 0.0);
+    $ingresosBrutosValT = (float)($ingresosBrutosT[0]['total'] ?? 0.0);
+    $promedioVentaValT = (float)($promedioVentaT[0]['total'] ?? 0.0);
+    $gastosValT = (float)($gastosT[0]['total'] ?? 0.0);
+    $gananciaValT = $ingresosBrutosValT - $gastosValT;
+
+
     // para tablas/productos (si no hay cálculo específico aún, duplicar general)
-    $stockVendidoTabla[] = $stockVendidoVal;
-    $stockIngresadoTabla[] = $stockIngresadoVal;
-    $ingresosBrutosTabla[] = $ingresosBrutosVal;
-    $promedioVentaTabla[] = $promedioVentaVal;
-    $gastosTabla[] = $gastosVal;
-    $gananciaTabla[] = $gananciaVal;
+    $stockVendidoTabla[] = $stockVendidoValT;
+    $stockIngresadoTabla[] = $stockIngresadoValT;
+    $ingresosBrutosTabla[] = $ingresosBrutosValT;
+    $promedioVentaTabla[] = $promedioVentaValT;
+    $gastosTabla[] = $gastosValT;
+    $gananciaTabla[] = $gananciaValT;
 }
 
 $response = [
