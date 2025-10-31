@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id : userID})
     }).then(response => response.json())
         .then(data => {
             if (!data.success){
@@ -42,18 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 creationDate = formatDate(creationDateNoFormat);
             }
 
-            const estadisticasFechaContainer = document.getElementById('estadisticas-fecha-container');
+            const estadisticasFechaContainer = document.getElementById('estadisticas-fecha');
 
             estadisticasFechaContainer.innerHTML = `<div class="flex-column" id="estadisticas-fecha-desde">
                                                 <h4>${creationDate.day} ${creationDate.date} de ${creationDate.month} de ${creationDate.year}</h4>
                                                     <p>Desde</p>          
                                             </div>
-                                            <input type="date" class="hidden" id="fecha-desde-elegida">
                                             <div class="flex-column" id="estadisticas-fecha-hasta">
                                                 <h4>${todayDate.day} ${todayDate.date} de ${todayDate.month} de ${todayDate.year}</h4>
                                                 <p>Hasta</p>
-                                            </div>
-                                            <input type="date" class="hidden" id="fecha-hasta-elegida">`
+                                            </div>`
 
             actualizarEstadisticas(creationDateNoFormat,todayDateNoFormat,chart);
 
@@ -65,46 +62,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
             fechaHastaInput.min = creationDateNoFormat.toISOString().slice(0,10);
             fechaDesdeInput.min = creationDateNoFormat.toISOString().slice(0,10);
+            fechaDesdeInput.max = formatYMD(todayDateNoFormat);
+            fechaHastaInput.max = formatYMD(todayDateNoFormat);
 
             var fechaDesde = creationDate;
             var fechaHasta = todayDate;
             var fechaDesdeNoFormat = creationDateNoFormat;
             var fechaHastaNoFormat = todayDateNoFormat;
 
+            const greyBg = document.getElementById('grey-background');
+
+            function hidePicker(){
+                fechaDesdeInput.classList.add('hidden');
+                fechaHastaInput.classList.add('hidden');
+                greyBg.classList.add('hidden');
+            }
+
+            function showPicker(fechaInput){
+                fechaInput.classList.remove('hidden');
+                greyBg.classList.remove('hidden');
+
+                setTimeout(() => {
+                    fechaInput.showPicker();
+                }, 0)
+            }
+
             fechaDesdeBtn.addEventListener('click',function() {
-                fechaDesdeInput.showPicker();
+                showPicker(fechaDesdeInput);
+            })
+            fechaHastaBtn.addEventListener('click',function() {
+                showPicker(fechaHastaInput);
+            })
+
+            fechaDesdeInput.addEventListener('blur', hidePicker);
+
+            fechaHastaInput.addEventListener('blur', hidePicker);
+
+            greyBg.addEventListener('click', () =>{
+                hidePicker();
             })
 
             fechaDesdeInput.addEventListener('input', function() {
-                fechaDesdeNoFormat = new Date(this.value.replace(/-/g, '\/'));
+                const fechaPrevia = fechaDesdeNoFormat;
 
-                const phpDesdeDate = fechaDesdeNoFormat;
-                const phpHastaDate = fechaHastaNoFormat;
+                fechaDesdeNoFormat = (this.value === '') ? fechaPrevia : new Date(this.value.replace(/-/g, '\/'));
+
+                const phpDate = {'desde' : fechaDesdeNoFormat, 'hasta' : fechaHastaNoFormat}
 
                 fechaHastaInput.min = this.value;
 
                 fechaDesde = formatDate(fechaDesdeNoFormat);
                 fechaDesdeBtn.querySelector('h4').textContent = `${fechaDesde.day} ${fechaDesde.date} de ${fechaDesde.month} de ${fechaDesde.year}`
-                fechaHastaBtn.querySelector('h4').textContent = `${fechaHasta.day} ${fechaHasta.date} de ${fechaHasta.month} de ${fechaHasta.year}`
 
-                actualizarEstadisticas(phpDesdeDate,phpHastaDate,chart);
+                actualizarEstadisticas(phpDate.desde,phpDate.hasta,chart);
+                hidePicker();
             })
 
-            fechaHastaBtn.addEventListener('click',function() {
-                fechaHastaInput.showPicker();
-            })
+
 
             fechaHastaInput.addEventListener('input', function() {
-                fechaHastaNoFormat = new Date(this.value.replace(/-/g, '\/'));
+                const fechaPrevia = fechaHastaNoFormat;
 
-                const phpDesdeDate = fechaDesdeNoFormat;
-                const phpHastaDate = fechaHastaNoFormat;
+                fechaHastaNoFormat = (this.value === '') ? fechaPrevia : new Date(this.value.replace(/-/g, '\/'));
+
+                const phpDate = {'desde' : fechaDesdeNoFormat, 'hasta' : fechaHastaNoFormat}
+
+                fechaDesdeInput.max = this.value;
 
                 fechaHasta = formatDate(fechaHastaNoFormat);
-                fechaDesdeBtn.querySelector('h4').textContent = `${fechaDesde.day} ${fechaDesde.date} de ${fechaDesde.month} de ${fechaDesde.year}`
+
                 fechaHastaBtn.querySelector('h4').textContent = `${fechaHasta.day} ${fechaHasta.date} de ${fechaHasta.month} de ${fechaHasta.year}`
 
-                actualizarEstadisticas(phpDesdeDate,phpHastaDate,chart);
+                actualizarEstadisticas(phpDate.desde,phpDate.hasta,chart);
+                hidePicker();
             })
         })
 
@@ -125,7 +155,7 @@ function actualizarEstadisticas(fechaDesde, fechaHasta,chart)
     const listaFechas = [];
 
     while (fechaActual <= fechaHasta){
-        listaFechas.push(fechaActual.toISOString().slice(0,10));
+        listaFechas.push(formatYMD(fechaActual));
         fechaActual.setDate(fechaActual.getDate()+1);
     }
 
@@ -144,9 +174,18 @@ function actualizarEstadisticas(fechaDesde, fechaHasta,chart)
         })
 }
 
+function formatYMD(date) {
+    const year = date.getFullYear();
+    // getMonth() es base 0 (Enero=0), por eso se le suma 1
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 function formatStatData(data) {
 
-    const categories = ['General','Table','Product'];
+    const categories = ['General','Table'];
     const statistics = ['stockVendido','stockIngresado','gastos','ganancia','ingresosBrutos','promedioVenta'];
 
     const groupedData = {};
@@ -180,13 +219,7 @@ function addContainerData(dailyData, groupData, listaFechas,chart){
         { id: 'ingresos-brutos-tabla',groupedKey: 'tableData.ingresosBrutos', dailyKey: 'ingresosBrutosTable', unit: '$' },
         { id: 'ingresos-stock-tabla', groupedKey: 'tableData.stockIngresado', dailyKey: 'stockIngresadoTable', unit: 'unit' },
         { id: 'gastos-tabla',         groupedKey: 'tableData.gastos',         dailyKey: 'gastosTable',         unit: '$' },
-        { id: 'promedio-venta-tabla', groupedKey: 'tableData.promedioVenta',  dailyKey: 'promedioVentaTable',  unit: '$' },
-        { id: 'ventas-producto',         groupedKey: 'productData.stockVendido',   dailyKey: 'stockVendidoProduct',   unit: 'unit' },
-        { id: 'ganancias-producto',      groupedKey: 'productData.ganancia',       dailyKey: 'gananciaProductl',       unit: '$' },
-        { id: 'ingresos-brutos-producto',groupedKey: 'productData.ingresosBrutos', dailyKey: 'ingresosBrutosProduct', unit: '$' },
-        { id: 'ingresos-stock-producto', groupedKey: 'productData.stockIngresado', dailyKey: 'stockIngresadoProduct', unit: 'unit' },
-        { id: 'gastos-producto',         groupedKey: 'productData.gastos',         dailyKey: 'gastosProduct',         unit: '$' },
-        { id: 'promedio-venta-producto', groupedKey: 'productData.promedioVenta',  dailyKey: 'promedioVentaProduct',  unit: '$' }
+        { id: 'promedio-venta-tabla', groupedKey: 'tableData.promedioVenta',  dailyKey: 'promedioVentaTable',  unit: '$' }
     ];
 
     containerConfig.forEach(container =>{
@@ -194,7 +227,7 @@ function addContainerData(dailyData, groupData, listaFechas,chart){
         const keys = container.groupedKey.split('.');
 
         const groupValue = groupData[keys[0]][keys[1]];
-        const h3Text = (container.unit === 'unit') ? `${groupValue} unidad${(groupData.groupedKey > 1) ? 'es' : ''}` :
+        const h3Text = (container.unit === 'unit') ? `${groupValue} unidad${(groupValue > 1) ? 'es' : ''}` :
             `$${groupValue}`;
 
         statisticContainer.querySelector('h3').textContent = h3Text;

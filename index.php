@@ -1,5 +1,6 @@
 <?php
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/auth_helper.php';
 $currentUser = getCurrentUser();
 ?>
 
@@ -25,7 +26,7 @@ $currentUser = getCurrentUser();
     </header>
 
     <main>
-        <div id="welcome-view" class="view-container hidden">
+        <div id="welcome-view" class="view-container">
             <h2>
                 <?php
                     if ($currentUser):

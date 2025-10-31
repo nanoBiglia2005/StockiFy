@@ -200,26 +200,56 @@ main {
     align-items: start;
 }
 
-#estadisticas-fecha-container{
-    margin-top: 2rem;
+#estadisticas-fecha{
     width: 70%;
     align-self: center;
-    box-shadow: 10px 10px 0px var(--color-black);
     border: 2px solid var(--color-gray);
     border-radius: var(--border-radius);
     transition: all var(--transition-speed) ease;
 }
-
-#estadisticas-generales-container{
-    margin-top: 2rem;
+#estadisticas-fecha-container{
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
     width: 100%;
+}
+
+.estadisticas-container {
+    transition: all var(--transition-speed) ease;
+    width: 80%;
+    border: var(--border-strong);
+}
+
+.estadisticas-container h4 {
+    margin-bottom: 2rem;
+    color: var(--color-gray);
+}
+
+.estadisticas-container > h1, .estadisticas-container > div > h1{
+    font-size: 4rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.estadisticas-container:hover{
+    cursor: pointer;
+    transform: scale(1.005);
+    background-color: var(--accent-color);
+}
+
+.estadisticas-container:hover h4{
+    color: var(--color-white);
+    font-size: 1.5rem;
+}
+
+.stat-grid{
     transition: all var(--transition-speed) ease;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     row-gap: 4rem;
+    padding: 0 4rem;
 }
 
-#estadisticas-fecha-container > div{
+#estadisticas-fecha > div{
     border-style: solid;
     border-color: var(--color-gray);
     padding: 1rem;
@@ -236,32 +266,32 @@ main {
     border-width: 0 0 0 2px;
 }
 
-#estadisticas-fecha-container > div:hover{
+#estadisticas-fecha > div:hover{
     cursor: pointer;
     background-color: var(--accent-color);
     border-color: var(--color-black);
 }
 
-#estadisticas-fecha-container div p{
+#estadisticas-fecha div p{
     color: var(--color-gray);
     font-size: 0.8rem;
     transition: all var(--transition-speed) ease;
 }
 
-#estadisticas-fecha-container div h4{
+#estadisticas-fecha div h4{
     transition: all var(--transition-speed) ease;
 }
 
-#estadisticas-fecha-container div:hover p{
+#estadisticas-fecha div:hover p{
     color: var(--color-white);
     font-size: 1rem;
 }
 
-#estadisticas-fecha-container div:hover h4{
+#estadisticas-fecha div:hover h4{
     font-size: 1.1rem;
 }
 
-#estadisticas-fecha-container:hover{
+#estadisticas-fecha:hover{
     border: var(--border-strong);
     box-shadow: 10px 10px 0px var(--accent-color-hover);
 }
@@ -280,33 +310,8 @@ main {
     transform: scale(1.1);
 }
 
-.estadisticas-container{
-    background-color: var(--color-white);
-    width: 100%; margin-top:6rem;
-    padding: 4rem;
-    transition: all var(--transition-speed) ease;
-    border-width: 2px 0 2px 0;
-    border-style: solid;
-    border-color: var(--color-white);
-}
-
-.estadisticas-container:hover{
-    border-color: var(--color-gray);
-    cursor: pointer;
-    transform: scale(1.005);
-    border-width: 2px 2px 2px 2px;
-}
-
 .estadistica-item-container:hover h1, h3, h4{
     transition: all var(--transition-speed) ease;
-}
-
-.estadisticas-container h4{
-    color: var(--color-gray);
-}
-
-.estadisticas-container > h1{
-    font-size: 4rem;
 }
 
 .estadistica-item-container:hover h1{
@@ -323,6 +328,15 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
+}
+
+.fecha-container {
+    position: fixed;
+    z-index: 20;
+    top: 10%;
+    left: 46%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
 }
 
 /* ---- Estilos para Botones (Versión "Pop-Up") ---- */

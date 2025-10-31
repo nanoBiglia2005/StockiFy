@@ -16,12 +16,22 @@
 </head>
 
 <?php
-    $current_user = [
-            "name" => "Stefano",
-            "surname" => "Biglia",
-            "email" => "bigliastefano2005@gmail.com",
-            "password" => "contraseña",
-    ];
+    if ($_SERVER["REQUEST_METHOD"] == "POST"){
+        $current_user = [
+            "name" => $_POST["name"],
+            "surname" => $_POST["surname"],
+            "email" => $_POST["email"],
+            "password" => $_POST["password"]
+        ];
+    }
+    else {
+        $current_user = [
+                "name" => "Stefano",
+                "surname" => "Biglia",
+                "email" => "bigliastefano2005@gmail.com",
+                "password" => "contraseña",
+        ];
+    }
 
     if (!$current_user){
         header("Location: index.php");

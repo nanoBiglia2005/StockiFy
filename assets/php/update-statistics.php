@@ -4,7 +4,6 @@ $data = json_decode($json, true);
 
 
 $listaFechas = $data['fechas'];
-$id = $data['id'];
 
 $stockVendidoGeneral = [];
 $stockIngresadoGeneral = [];
@@ -19,19 +18,22 @@ $promedioVentaTabla= [];
 $gastosTabla = [];
 $gananciaTabla = [];
 
+$count = 0;
+
 foreach ($listaFechas as $fecha) {
-    $stockVendidoGeneral.array_push();
-    $stockIngresadoGeneral.array_push();
-    $ingresosBrutosGeneral.array_push();
-    $promedioVentaGeneral.array_push();
-    $gastosGeneral.array_push();
-    $gananciaGeneral.array_push();
-    $stockIngresadoTabla.array_push();
-    $ingresosBrutosTabla.array_push();
-    $stockVendidoTabla.array_push();
-    $promedioVentaTabla.array_push();
-    $gastosTabla.array_push();
-    $gananciaTabla.array_push();
+    $promedioVentaGeneral[$count] = 1;
+    $ingresosBrutosGeneral[$count] = 1;
+    $stockVendidoGeneral[$count] = 1;
+    $stockIngresadoGeneral[$count] = 1;
+    $gastosGeneral[$count] = 1;
+    $gananciaGeneral[$count] = 1;
+    $stockIngresadoTabla[$count] = 1;
+    $ingresosBrutosTabla[$count] = 1;
+    $stockVendidoTabla[$count] = 1;
+    $promedioVentaTabla[$count] = 1;
+    $gastosTabla[$count] = 1;
+    $gananciaTabla[$count] = 1;
+    $count++;
 }
 $response = ['stockVendidoGeneral' => $stockVendidoGeneral, 'stockIngresadoGeneral' => $stockIngresadoGeneral, 'ingresosBrutosGeneral' => $ingresosBrutosGeneral,
     'gastosGeneral' => $gastosGeneral, 'gananciaGeneral' => $gananciaGeneral, 'promedioVentaGeneral' => $promedioVentaGeneral,
